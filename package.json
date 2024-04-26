@@ -5,8 +5,9 @@
   "description": "Scripts for scraping the Heavens Above website.",
   "main": "run.js",
   "scripts": {
-    "start": "node run.js",
-    "lint": "eslint ."
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "build": "react-scripts build"
   },
   
   "dependencies": {
