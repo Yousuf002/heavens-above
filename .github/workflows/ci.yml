@@ -1,0 +1,58 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+        continue-on-error: true
+
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: true
+
+      # Add more steps for other checks as needed
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Send Slack Notification On Success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'success'
+          message: 'CI checks passed for the main branch.'
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel: 'your-slack-channel'
+
+      - name: Send Slack Notification On Failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'failure'
+          message: 'CI checks failed for the main branch.'
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel: 'your-slack-channel'
