@@ -29,3 +29,20 @@ jobs:
 
       - name: Test
         run: npm test
+
+      # Add Slack notifications
+      - name: Send Slack Notification On Success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          slack-token: ${{ secrets.SLACK_TOKEN }}
+          slack-channel: ${{ secrets.SLACK_CHANNEL }}
+          message: 'CI checks passed for the main branch.'
+
+      - name: Send Slack Notification On Failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          slack-token: ${{ secrets.SLACK_TOKEN }}
+          slack-channel: ${{ secrets.SLACK_CHANNEL }}
+          message: 'CI checks failed for the main branch.'
